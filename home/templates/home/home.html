@@ -1,0 +1,49 @@
+{% extends 'base.html' %} {% load static %} {% block body %}
+<div class="d-flex flex-column gap-4">
+  <h1 class="">Welcome, <span>{{ username }}</span>.</h1>
+</div>
+
+<div class="LP-menu__container">
+  {% if role == '0' or role == '1' %}
+  <div class="LP-menu__button">
+    <a href="/inventory/" class="icon" /><i class="bi bi-box-seam-fill" style="font-size: 3rem;"></i></a><center>
+    INVENTORY</center></div>
+  <div class="LP-menu__button">
+    <a href="/request/" class="icon" /><i class="bi bi-send-exclamation" style="font-size: 3rem;"></i></a><center>
+    REQUEST</center></div>
+  {% if role == '0' %}
+  <div class="LP-menu__button">
+    {% if gedung == '0' %}
+    <a href="/riwayat/pembelian" class="icon" /><i class="bi bi-ui-checks" style="font-size: 3rem;"></i></a>
+    {% else %}
+    <a href="/riwayat/penjualan" class="icon" /><i class="bi bi-ui-checks" style="font-size: 3rem;"></i></a>
+    {% endif %}
+    <center>RIWAYAT</center></div>
+  <div class="LP-menu__button">
+    {% if gedung == '0' %}
+    <a href="/laporan/pembelian" class="icon" /><i class="bi bi-graph-up-arrow" style="font-size: 3rem;"></i></a>
+    {% else %}
+    <a href="/laporan/penjualan" class="icon" /><i class="bi bi-graph-up-arrow" style="font-size: 3rem;"></i></a>
+    {% endif %}
+    <center>LAPORAN</center></div>
+  {% endif %}
+  {% if gedung == '0' %}
+  <div class="LP-menu__button">
+    <a href="/supplier/" class="icon" /><i class="bi bi-briefcase-fill" style="font-size: 3rem;"></i></a><center>
+    SUPPLIER</center></div>
+  {% elif gedung == '1' %}
+  <div class="LP-menu__button">
+    <a href="/resep/" class="icon" /><i class="bi bi-filter-square-fill" style="font-size: 3rem;"></i></a><center>
+    RESEP</center></div>
+  {% endif %}
+  {% elif role == '2' %}
+  <div class="LP-menu__button">
+    <a href="/employee/" class="icon" /><i class="bi bi-people-fill" style="font-size: 3rem;"></i></a><center>
+    KARYAWAN</center></div>
+  <div class="LP-menu__button">
+    <a href="/gedung/" class="icon" /><i class="bi bi-building" style="font-size: 3rem;"></i></a><center>
+    GEDUNG</center></div>
+  {% endif %}
+</div>
+{% endblock body %}
+

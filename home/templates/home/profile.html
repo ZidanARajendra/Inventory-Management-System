@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+{% for message in messages %}
+  {% if message.tags == 'alert-success' %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %}
+  {% if message.tags == 'alert-danger' %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %} 
+{% endfor %}
+
+<div class="container">
+    <section class="section profile">
+      <div class="row">
+        <div class="col-xl-4">
+
+          <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+              <img src="/static/logo/profile.png" alt="Profile" >
+              <h2>{{profile.nama}}</h2>
+              <h3>
+                {% if request.user.user_profile.role == '0' %} Manager
+                {% elif request.user.user_profile.role == '1' %} Staff
+                {% elif request.user.user_profile.role == '2' %} Admin
+                {% endif%}
+              </h3>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-xl-8">
+
+          <div class="card">
+            <div class="card-body pt-3">
+              <!-- Bordered Tabs -->
+              <ul class="nav nav-tabs nav-tabs-bordered">
+              </ul>
+              <div class="tab-content pt-2">
+
+                <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                  <h5 class="card-title">Profile Details</h5>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label ">Nama</div>
+                    <div class="col-lg-9 col-md-8">{{profile.nama}}</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label ">Username</div>
+                    <div class="col-lg-9 col-md-8">{{user.username}}</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Email</div>
+                    <div class="col-lg-9 col-md-8">{{profile.email}}</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">No Telepon</div>
+                    <div class="col-lg-9 col-md-8">{{profile.nohp}}</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Role</div>
+                    <div class="col-lg-9 col-md-8">
+                      {% if request.user.employee.role == '0' %} Manager
+                      {% elif request.user.employee.role == '1' %} Staff
+                      {% elif request.user.employee.role == '2' %} Admin
+                      {% endif%}
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Cabang</div>
+                    <div class="col-lg-9 col-md-8">
+                      {% for gd in gedungs %}
+                      {% if gd.id_gedung == profile.id_gedung.id_gedung %} {{ gd.nama }} {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+
+                </div>
+
+      <div class="text-center" data-bs-toggle="modal" data-bs-target="#modify_{{username}}">
+          <a class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit Profile</a>
+      </div>
+
+      <!--Modal Modify-->   
+      <div class="modal fade" id="modify_{{username}}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                  </button>
+                </div>
+                <form action="/edit_profile/" method="POST">
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <div class="d-flex flex-column gap-3">
+                          <div class="form-floating">
+                            <input type="text" style="background-color:#e19c8d; color:white" class="form-control" id="nama" name="nama" placeholder=" " value="{{ profile.nama }}" disabled/>
+                            <label for="nama">Nama</label>
+                          </div>
+                          <div class="form-floating">
+                            <input type="text" style="background-color:#e19c8d; color:white" class="form-control" id="username" name="username" placeholder=" " value="{{ profile.user.username }}" disabled/>
+                            <label for="username">Username</label>
+                          </div>
+                          <div class="form-floating">
+                            <input type="text" style="background-color:#e19c8d; color:white" class="form-control" placeholder=" " 
+                            {% if profile.role == '0' %} value="Manager" {% endif %}
+                            {% if profile.role == '1' %} value="Staff" {% endif %}
+                            {% if profile.role == '2' %} value="Admin"{% endif %}
+                            disabled/>
+                            <label for="role">Role</label>
+                          </div>
+                          <div class="form-floating">
+                            <input type="text" id="gedung" name="gedung" style="background-color:#e19c8d; color:white" class="form-control" placeholder=" "
+                              {% for gd in gedungs %}
+                              {% if gd.id_gedung == profile.id_gedung.id_gedung %} value="{{ gd.nama }}" {% endif %}
+                              {% endfor %}
+                              disabled>
+                            <label for="gedung">Cabang</label>
+                          </div>
+                          <div class="form-floating">
+                            <input type="tel" class="form-control" id="nohp" name="nohp" placeholder=" " pattern="[0-9]{4}[0-9]{4}[0-9]{4}" value="{{ profile.nohp }}" />
+                              <label for="nohp">No Telp</label>
+                          </div>
+                          <div class="form-floating">
+                            <input type="email" class="form-control" id="email" name="email" placeholder=" " required value="{{ profile.email }}"/>
+                            <label for="email">Email</label>
+                          </div>
+                          
+                        </div>
+                    <div class="modal-footer text-center">
+                      <button class="btn" type="submit" style="background: #987554; color: white">Simpan</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+  </div>
+{% endblock body %}
